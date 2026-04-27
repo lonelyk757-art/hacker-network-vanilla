@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HACKER NETWORK - Admin Panel</title>
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="admin-navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">⚙️</div>
+                <h1>HACKER NETWORK ADMIN</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">← Back to Website</a>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <h2>ADMIN LOGIN</h2>
+                <p class="login-subtitle">Secure Access Required</p>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            placeholder="Enter admin password" 
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="btn-login">LOGIN</button>
+                </form>
+                
+                <p class="login-hint">
+                    <strong>Demo Password:</strong> admin123
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard">
+        <div class="admin-container">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <div class="sidebar-menu">
+                    <button class="menu-item active" onclick="switchTab('articles')">
+                        📰 Manage Articles
+                    </button>
+                    <button class="menu-item" onclick="switchTab('create')">
+                        ✍️ Create Article
+                    </button>
+                    <button class="menu-item" onclick="switchTab('stats')">
+                        📊 Statistics
+                    </button>
+                    <button class="menu-item" onclick="switchTab('settings')">
+                        ⚙️ Settings
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="admin-content">
+                <!-- Manage Articles Tab -->
+                <section id="articlesTab" class="admin-tab active">
+                    <div class="tab-header">
+                        <h2>Manage Articles</h2>
+                        <div class="search-box">
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Search articles..." 
+                                onkeyup="filterArticles()"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="articles-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Threat Level</th>
+                                    <th>Date</th>
+                                    <th>Author</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="articlesTableBody">
+                                <!-- Articles will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Create Article Tab -->
+                <section id="createTab" class="admin-tab">
+                    <div class="tab-header">
+                        <h2>Create New Article</h2>
+                    </div>
+
+                    <form class="article-form" onsubmit="handleCreateArticle(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="title">Article Title *</label>
+                                <input 
+                                    type="text" 
+                                    id="title" 
+                                    placeholder="Enter article title" 
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">Category *</label>
+                                <select id="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Breaches">Breaches</option>
+                                    <option value="Vulnerabilities">Vulnerabilities</option>
+                                    <option value="Malware">Malware</option>
+                                    <option value="Privacy">Privacy</option>
+                                    <option value="Technology">Technology</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="threat">Threat Level *</label>
+                                <select id="threat" required>
+                                    <option value="">Select Threat Level</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="author">Author *</label>
+                                <input 
+                                    type="text" 
+                                    id="author" 
+                                    placeholder="Author name" 
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="date">Date *</label>
+                                <input 
+                                    type="date" 
+                                    id="date" 
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="icon">Icon/Emoji *</label>
+                                <input 
+                                    type="text" 
+                                    id="icon" 
+                                    placeholder="e.g., 🔓 or 🛡️" 
+                                    maxlength="2"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="excerpt">Excerpt *</label>
+                            <textarea 
+                                id="excerpt" 
+                                placeholder="Brief summary of the article" 
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content">Full Content *</label>
+                            <textarea 
+                                id="content" 
+                                placeholder="Full article content (supports HTML tags like <h3>, <p>, <ul>, <li>)" 
+                                rows="10"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Create Article</button>
+                            <button type="reset" class="btn-secondary">Clear Form</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Statistics Tab -->
+                <section id="statsTab" class="admin-tab">
+                    <div class="tab-header">
+                        <h2>Statistics</h2>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📰</div>
+                            <div class="stat-content">
+                                <h3>Total Articles</h3>
+                                <p class="stat-number" id="totalArticles">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🔴</div>
+                            <div class="stat-content">
+                                <h3>Critical Threats</h3>
+                                <p class="stat-number" id="criticalCount">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🟠</div>
+                            <div class="stat-content">
+                                <h3>High Threats</h3>
+                                <p class="stat-number" id="highCount">0</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🟡</div>
+                            <div class="stat-content">
+                                <h3>Medium Threats</h3>
+                                <p class="stat-number" id="mediumCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-section">
+                        <h3>Articles by Category</h3>
+                        <div id="categoryStats" class="category-stats">
+                            <!-- Stats will be populated here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Tab -->
+                <section id="settingsTab" class="admin-tab">
+                    <div class="tab-header">
+                        <h2>Settings</h2>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Data Management</h3>
+                        <p>Manage your article database</p>
+                        
+                        <div class="settings-actions">
+                            <button class="btn-secondary" onclick="exportData()">
+                                📥 Export Data (JSON)
+                            </button>
+                            <button class="btn-secondary" onclick="document.getElementById('importFile').click()">
+                                📤 Import Data (JSON)
+                            </button>
+                            <input 
+                                type="file" 
+                                id="importFile" 
+                                accept=".json" 
+                                style="display:none;" 
+                                onchange="importData(event)"
+                            >
+                            <button class="btn-danger" onclick="resetToDefault()">
+                                🔄 Reset to Default
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Admin Password</h3>
+                        <p>Change your admin password</p>
+                        
+                        <form onsubmit="handleChangePassword(event)">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password:</label>
+                                <input 
+                                    type="password" 
+                                    id="currentPassword" 
+                                    placeholder="Enter current password" 
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password:</label>
+                                <input 
+                                    type="password" 
+                                    id="newPassword" 
+                                    placeholder="Enter new password" 
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password:</label>
+                                <input 
+                                    type="password" 
+                                    id="confirmPassword" 
+                                    placeholder="Confirm new password" 
+                                    required
+                                >
+                            </div>
+                            <button type="submit" class="btn-primary">Change Password</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Storage Info</h3>
+                        <p>Your data is stored locally in your browser</p>
+                        <div class="storage-info">
+                            <p><strong>Storage Type:</strong> Browser LocalStorage</p>
+                            <p><strong>Data Location:</strong> Client-side only</p>
+                            <p><strong>Backup:</strong> Export regularly to JSON</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            <h2>Edit Article</h2>
+            
+            <form onsubmit="handleEditArticle(event)">
+                <input type="hidden" id="editId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editTitle">Article Title *</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCategory">Category *</label>
+                        <select id="editCategory" required>
+                            <option value="Breaches">Breaches</option>
+                            <option value="Vulnerabilities">Vulnerabilities</option>
+                            <option value="Malware">Malware</option>
+                            <option value="Privacy">Privacy</option>
+                            <option value="Technology">Technology</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editThreat">Threat Level *</label>
+                        <select id="editThreat" required>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editAuthor">Author *</label>
+                        <input type="text" id="editAuthor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDate">Date *</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editExcerpt">Excerpt *</label>
+                    <textarea id="editExcerpt" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editContent">Full Content *</label>
+                    <textarea id="editContent" rows="10" required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
